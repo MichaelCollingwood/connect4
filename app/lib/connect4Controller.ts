@@ -61,6 +61,8 @@ export class Connect4Controller {
     if (this.checkWin(row, column, player)) {
       this.gameState = "won";
       this.winner = player;
+      // hit the endpoint to save the game
+      this.saveGame();
       return this.getStatus();
     }
 
@@ -114,6 +116,36 @@ export class Connect4Controller {
       }
     }
     return true;
+  }
+
+  private async saveGame() {
+    if (this.winner === 0 && this.gameState !== "draw") return;
+
+    const outcome: "DRAW" | 1 | 2 = this.gameState === "draw" ? "DRAW" : (this.winner as 1 | 2);
+
+    await this.postGameResult(outcome);
+  }
+
+  private async postGameResult(
+    outcome: "DRAW" | 1 | 2,
+  ) {
+    try {
+      const response = await fetch("/api/games", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          outcome,
+          player1: 1,
+          player2: 2,
+        }),
+      });
+
+      if (!response.ok) {
+        console.error("Failed to save game:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Failed to save game:", error);
+    }
   }
 
   public getStatus(): GameStatus {

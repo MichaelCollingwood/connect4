@@ -8,9 +8,10 @@ datasource db {
 }
 
 model Game {
-  id        Int     @id @default(autoincrement())
-  winner    Int
-  loser     Int
+  id        Int      @id @default(autoincrement())
+  outcome   Int      // 0 = DRAW, 1 = player1 wins, 2 = player2 wins
+  player1   Int
+  player2   Int
   createdAt DateTime @default(now()) @map("created_at")
 
   @@index([createdAt])
