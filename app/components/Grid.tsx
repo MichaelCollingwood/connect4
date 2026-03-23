@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Connect4Controller, GameStatus } from "../lib/connect4Controller";
+import ResetButton from "./ResetButton";
 
 type GridProps = {
   controller: Connect4Controller;
@@ -66,6 +67,7 @@ export default function Grid({ controller }: GridProps) {
           )),
         )}
       </div>
+      <ResetButton onReset={() => setGameStatus(controller.newGame())} />
     </div>
   );
 }
