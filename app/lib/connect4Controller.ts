@@ -67,6 +67,7 @@ export class Connect4Controller {
 
     if (this.checkDraw()) {
       this.gameState = "draw";
+      this.saveGame();
       return this.getStatus();
     }
 
@@ -120,20 +121,20 @@ export class Connect4Controller {
   private async saveGame() {
     if (this.winner === 0 && this.gameState !== "draw") return;
 
-    const outcome: "DRAW" | 1 | 2 = this.gameState === "draw" ? "DRAW" : (this.winner as 1 | 2);
+    const outcome: 0 | 1 | 2 = this.gameState === "draw" ? 0 : (this.winner as 1 | 2);
 
     await this.postGameResult(outcome);
   }
 
   private async postGameResult(
-    outcome: "DRAW" | 1 | 2,
+    outcome: 0 | 1 | 2,
   ) {
     try {
       const response = await fetch("/api/games", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          outcome,
+          outcome: outcome,
           player1: 1,
           player2: 2,
         }),

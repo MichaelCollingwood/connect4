@@ -2,11 +2,35 @@ import { NextRequest, NextResponse } from "next/server";
 import { GameSubmission } from "@/app/lib/database.types";
 import { prisma } from "@/app/lib/prisma";
 
+export async function GET() {
+  try {
+    if (!process.env.DATABASE_URL) {
+      return NextResponse.json(
+        { error: "Database not configured" },
+        { status: 500 },
+      );
+    }
+
+    const games = await prisma.game.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+
+    return NextResponse.json(games, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching games:", error);
+    const message = error instanceof Error ? error.message : "Unknown error";
+    return NextResponse.json(
+      { error: `Failed to fetch games: ${message}` },
+      { status: 500 },
+    );
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body: GameSubmission = await request.json();
 
-    if (!body.outcome || body.player1 === undefined || body.player2 === undefined) {
+    if (body.outcome === undefined || body.player1 === undefined || body.player2 === undefined) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 },
