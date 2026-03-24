@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
   try {
     const body: GameSubmission = await request.json();
 
-    if (body.winner === undefined || body.loser === undefined) {
+    if (!body.outcome || body.player1 === undefined || body.player2 === undefined) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 },
@@ -22,8 +22,9 @@ export async function POST(request: NextRequest) {
 
     const game = await prisma.game.create({
       data: {
-        winner: body.winner,
-        loser: body.loser,
+        outcome: body.outcome,
+        player1: body.player1,
+        player2: body.player2,
       },
     });
 

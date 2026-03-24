@@ -1,4 +1,5 @@
 export interface GameSubmission {
-  winner: number;
-  loser: number;
+  outcome: 0 | 1 | 2;
+  player1: number;
+  player2: number;
 }
