@@ -81,12 +81,12 @@ You will need to create a database in PgAdmin before starting this task!
 
 #### Task
 
-Look at the Prisma schema, and understand how the ORM works ([docs](https://www.prisma.io/docs "‌")).
+Look at the Prisma schema, and understand how the ORM works ([docs](https://www.prisma.io/docs)).
 
 1. Update the `.env` >`DATABASE_URL` with the credentials from PgAdmin
 2. Run the database migration (see `package.json` for the script)
 3. Use Postman/ curl to test the endpoint
-4. Use SQL select \* in PgAdmin to check the test
+4. Use SQL select  in PgAdmin to check the test
 5. Update `makeMove` to automatically upload wins/ draws
 
 #### Acceptance criteria
@@ -95,92 +95,27 @@ Look at the Prisma schema, and understand how the ORM works ([docs](https://www.
 
 ---
 
-### 5. Create a stats page based on past scores
-
-#### Background
-
-We now have a database with data uploaded from games played. We want to do more with that information, letting the user see those games.
-
-In the starter code, there should be a template Stats page.
-
-#### Task
-
-Look into, then implement a way to display the stats on this page. Start off with:
-
-- Summarise total wins by player and draws
-- List games, and who won and when.
-
-#### Acceptance criteria
-
-- As a player, I must see total wins/ losses/ draws, and listed games, in the stats page.
-
----
-
-### 6. Add game # moves and avg to stats page
-
-#### Background
-
-The stats page looks a little light, we could add some more details here!
-
-You might already be keeping track of the move count for checking for the draw condition. It would be nice to add that statistic to the stats page.
-
-#### Task
-
-- Add in how many goes it took each game took to finish in.
-
-#### Acceptance criteria
-
-- As a player, I should see the number of moves each game took in the stats page.
-
----
-
-### 7. Use GitHub Actions to automatically test changes
-
-#### Background
-
-We have a fully functioning game, but how do we stop future developers leading the code astray?
-
-#### Task
-
-Use Github Actions to automatically run the unit tests on pushes
-
-#### Acceptance criteria
-
-- As a developer, I must have Github run the unit tests automatically when a developer pushes changes to the repository.
-
----
-
-### 8. Use browser storage to keep game state
-
-#### Background
-
-We have a functioning game, but we can make sure we don’t lose progress from a page refresh!
-
-#### Task
-
-Using Local Storage, ensure the game state is saved, so the players can come back to the game even after a refresh!
-
-#### Acceptance criteria
-
-- As a player, the game should persist through a refresh!
-
----
-
-### 9. Enable online multiplayer with Redis
+### 5. Enable online multiplayer with Redis
 
 #### Background
 
 We have a fully-functioning game whereby players can “pass-and-play”. This is all very cool, but let’s say the client wants to go further. They might like the idea of playing each other at the same time.
 
-How is this possible? At the moment, the state of the game is stored in the browser (`this.board` and `gameStatus`). This won’t do, since we’re trying to let separate browsers/ machines play the same game.
+How is this possible? At the moment, the state of the game is stored in the browser (`gameStatus`). This won’t do, since we’re trying to let separate browsers/ machines play the same game.
 
-We _could_ store the state in our database in a table… or we could go for gold. It is possible to use an in-memory database like Redis and web sockets to play at the same time.
+We *could* store the state in our database in a table… or we could go for gold. It is possible to use an in-memory database like Redis and web sockets to play at the same time.
 
 #### Task
 
-Using AI tools to help you, look for a way to connect players over Redis. Remove the summary stats in the stats view, since that gets a little complicated, but keep the individual game results.
+- Using AI tools to help you, look for a way to connect players over Redis.
+- You can run redis locally for development & the free tier in Redis Cloud to play online. Do _not_ use Redis Upstash, since it has no free tier. NextJS isn't designed for continuous connections, however 
 
-Your trainer will specify the Redis access.
+Suggestion:
+1. You can start by modifying the initial game to just POST and stream the entire GameStatus.
+2. Then, you can move controller logic into the POST endpoint, so you only post the move
+3. Finally, you can implement multi-player
+
+Create an HLD to explain your proposed approach to your trainer
 
 #### Acceptance criteria
 
@@ -188,3 +123,4 @@ Your trainer will specify the Redis access.
 - Another player can join a game
 - Games can be played like normal
 - Stats only shows a list of played games
+- Code must be maintainable and extendable!
